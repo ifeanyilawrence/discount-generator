@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  discount-generator-server:
+    build:
+      context: ./DiscountGenerator
+      dockerfile: Dockerfile
+    ports:
+      - "7083:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - discount-network
+
+  discount-generator-client:
+    build:
+      context: ./discount-generator.client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_SIGNALR_SERVER=http://discount-generator-server:7083/discount-hub
+    networks:
+      - discount-network
+
+networks:
+  discount-network:
+    driver: bridge
